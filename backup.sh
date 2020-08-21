@@ -36,32 +36,40 @@ fi
 
 echo $USER_NAME $API_TOKEN
 
+function archive_repo(){
+    repo=$1
+    OUT_DIR=$2
+    USER_NAME=$3
+    API_TOKEN=$4
+
+    echo "$repo"
+    dest=$OUT_DIR/$repo
+
+    # echo "- cloning"
+    git clone https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
+
+    # echo "- compressing"
+    tar cfvz $dest.tar $dest &> /dev/null
+
+    # echo "- removing cache"
+    rm -rf $dest &> /dev/null
+}
+
 # main
 i=1
+repos=''
 while [ true ];do
+    echo "fetching page $i"
     json=`curl -s -u $USER_NAME:$API_TOKEN https://api.github.com/user/repos?page=$i`
     count=`echo $json | jq '. | length'`
 
     if [ "$count" == '0' ];then
         break
     else
-        repos=`echo $json | jq -r '.[].full_name'`
-
-        for repo in $repos;do
-            echo "$repo"
-            dest=$OUT_DIR/$repo
-
-            echo "- cloning"
-            git clone https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
-
-            echo "- compressing"
-            tar cfvz $dest.tar $dest &> /dev/null
-
-            echo "- removing cache"
-            rm -rf $dest &> /dev/null
-        done
-
+        repos="$repos $(echo $json | jq -r '.[].full_name')"
         i=$(($i+1))
     fi
 done
 
+export -f archive_repo
+echo $repos | xargs -P8 -l -d ' ' -I % bash -c "archive_repo '%' $OUT_DIR $USER_NAME $API_TOKEN"
