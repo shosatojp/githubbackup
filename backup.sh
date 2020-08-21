@@ -46,13 +46,13 @@ function archive_repo(){
     dest=$OUT_DIR/$repo
 
     # echo "- cloning"
-    git clone https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
+    git clone --mirror https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
 
-    # echo "- compressing"
-    tar cfvz $dest.tar $dest &> /dev/null
+    # # echo "- compressing"
+    # tar cfvz $dest.tar $dest &> /dev/null
 
-    # echo "- removing cache"
-    rm -rf $dest &> /dev/null
+    # # echo "- removing cache"
+    # rm -rf $dest &> /dev/null
 }
 
 # main
@@ -72,4 +72,4 @@ while [ true ];do
 done
 
 export -f archive_repo
-echo $repos | xargs -P8 -l -d ' ' -I % bash -c "archive_repo '%' $OUT_DIR $USER_NAME $API_TOKEN"
+echo $repos | tr ' ' '\n' | head -10 | xargs -P8 -l -I % bash -c "archive_repo '%' $OUT_DIR $USER_NAME $API_TOKEN"
