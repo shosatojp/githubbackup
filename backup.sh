@@ -72,4 +72,4 @@ while [ true ];do
 done
 
 export -f archive_repo
-echo $repos | tr ' ' '\n' | head -10 | xargs -P8 -l -I % bash -c "archive_repo '%' $OUT_DIR $USER_NAME $API_TOKEN"
+echo $repos | tr ' ' '\n' | xargs -P8 -l -I % bash -c "archive_repo '%' $OUT_DIR $USER_NAME $API_TOKEN"
