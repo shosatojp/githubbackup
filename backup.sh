@@ -43,7 +43,7 @@ function archive_repo(){
     API_TOKEN=$4
 
     echo "$repo"
-    dest=$OUT_DIR/$repo
+    dest=$OUT_DIR/$repo.git
 
     # echo "- cloning"
     git clone --mirror https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
