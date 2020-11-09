@@ -52,8 +52,11 @@ function archive_repo(){
     dest=$OUT_DIR/$repo.git
 
     # echo "- cloning"
-    git clone --mirror https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
-
+    if [[ -d $dest ]];then
+        (cd $dest && git fetch --all &> /dev/null)
+    else
+        git clone --mirror https://$USER_NAME:$API_TOKEN@github.com/$repo.git $dest &> /dev/null
+    fi
     # # echo "- compressing"
     # tar cfvz $dest.tar $dest &> /dev/null
 
