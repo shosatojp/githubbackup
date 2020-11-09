@@ -25,7 +25,7 @@ while getopts ":u:t:o:" 'opt'; do
     esac
 done
 
-if [ "$OUT_DIR" == ''];then
+if [[ ! $OUT_DIR ]];then
     echo 'Error: out dir'
     exit 1
 else
