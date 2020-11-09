@@ -25,6 +25,12 @@ while getopts ":u:t:o:" 'opt'; do
     esac
 done
 
+if [ "$OUT_DIR" == ''];then
+    echo 'Error: out dir'
+    exit 1
+else
+    mkdir -p $OUT_DIR
+fi
 if [ "$USER_NAME" == '' ];then
     echo 'Error: user name'
     exit 1
